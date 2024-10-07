@@ -18,7 +18,6 @@ function TaskCardColumns() {
     const [inProgressTasks, setInProgressTasks] = useState([]);
     const [blockedTasks, setBlockedTasks] = useState([]);
     const [doneTasks, setDoneTasks] = useState([]);
-    const [loading, setLoading] = useState(true);  // Nuevo estado para controlar la carga de tareas.
 
     // Función para obtener tareas según su estado.
     function getTasksByStatus(tasks, status) {
@@ -30,7 +29,6 @@ function TaskCardColumns() {
     useEffect(() => {
         async function fetchTasks() {
             try {
-                setLoading(true);  // Comienza la carga.
                 const resolvedTasks = await tasks;  // Espera que "tasks" se resuelva.
                 setBacklogTasks(getTasksByStatus(resolvedTasks, "Backlog"));
                 setToDoTasks(getTasksByStatus(resolvedTasks, "To Do"));
@@ -39,8 +37,6 @@ function TaskCardColumns() {
                 setDoneTasks(getTasksByStatus(resolvedTasks, "Done"));
             } catch (error) {
                 console.error("Error fetching tasks:", error);
-            } finally {
-                setLoading(false);  // Finaliza la carga.
             }
         }
 
@@ -54,13 +50,8 @@ function TaskCardColumns() {
             setInProgressTasks(getTasksByStatus(tasks, "In Progress"));
             setBlockedTasks(getTasksByStatus(tasks, "Blocked"));
             setDoneTasks(getTasksByStatus(tasks, "Done"));
-            setLoading(false);
         }
     }, [tasks]);
-
-    if (loading) {
-        return <p className="loading-message">Loading tasks...</p>;  // Mensaje mientras las tareas se están cargando.
-    }
 
     return (
         <main className="task-card-columns">

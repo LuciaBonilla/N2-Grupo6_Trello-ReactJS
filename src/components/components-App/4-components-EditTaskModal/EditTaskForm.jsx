@@ -26,7 +26,6 @@ function EditTaskForm() {
     const [status, setStatus] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [loading, setLoading] = useState(true);
 
     function findTaskToEdit() {
         if (taskToEditID === null) return null;
@@ -92,30 +91,20 @@ function EditTaskForm() {
     useEffect(() => {
         async function fetchTasks() {
             try {
-                setLoading(true);
                 const fetchedTasks = await BackendCaller.getAllTasks();
                 setTasks(fetchedTasks);
             } catch (error) {
                 console.error("Error fetching tasks:", error);
-            } finally {
-                setLoading(false);
             }
         }
 
         // Asegurarse de que se resuelvan las tareas y actualizar los inputs
         if (tasks && Array.isArray(tasks)) {
             updateInputsWithTaskToEditData();
-            setLoading(false);
         } else {
             fetchTasks();  // Si no hay tareas, intentar cargarlas
         }
     }, [taskToEditID, tasks]);
-
-
-
-    if (loading) {
-        return (<p>Cargando</p>);
-    }
 
     return (
         <form className="task-form task-form--edit-task">
